@@ -5,7 +5,6 @@ import time
 import multiprocessing as mp
 from pathlib import Path
 
-# Constants (Consider moving these to a config file if they need to be easily changed)
 MATCH_METHOD = cv2.TM_SQDIFF_NORMED
 MIN_THRESHOLD_FACTOR = 0.1
 IMAGE_SPLIT_RATIO = 0.5
@@ -229,7 +228,7 @@ def process_images(input_folder_path, output_folder_path, template_folder_path):
 if __name__ == "__main__":
     start_time = time.time()
 
-    input_path = r"E:\02.pdx\pdx25-overhang\data\OK"
+    input_path = r"E:\02.pdx\pdx25-overhang\data\O3084"
     output_path = r'E:\02.pdx\pdx25-overhang\data\cropped'
     template_folder_path = r'E:\02.pdx\pdx25-overhang\data\template'
     process_images(input_path, output_path, template_folder_path)

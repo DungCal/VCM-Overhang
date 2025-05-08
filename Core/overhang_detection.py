@@ -6,7 +6,7 @@ import glob
 # Constants
 PI_180 = np.pi / 180
 SAVE_IMAGE_CROP = False
-SAVE_IMAGE_LINES = True
+SAVE_IMAGE_LINES = False
 
 # --- Line Detection Functions ---
 
@@ -134,7 +134,8 @@ def process_image(image_file, output_folder_base, draw_folder, margin,
                   hough_rho, hough_theta,
                   hough_threshold_full, hough_threshold_cropped,
                   hough_minLineLength_full, hough_minLineLength_cropped,
-                  hough_maxLineGap_full, hough_maxLineGap_cropped):
+                  hough_maxLineGap_full, hough_maxLineGap_cropped,
+                  detect_threadhold):
     ok_folder = os.path.join(output_folder_base, "OK")
     ng_folder = os.path.join(output_folder_base, "NG")
 
@@ -162,7 +163,7 @@ def process_image(image_file, output_folder_base, draw_folder, margin,
         name, ext = os.path.splitext(filename)
 
         status = "NG"
-        if max_line_original is not None and max_line_cropped is not None and max_y_original <= max_y_cropped:
+        if max_line_original is not None and max_line_cropped is not None and max_y_original <= max_y_cropped - detect_threadhold:
             output_path = os.path.join(ok_folder, filename)
 
             if SAVE_IMAGE_CROP:
@@ -213,7 +214,8 @@ def process_images(input_folder, output_folder_base, draw_folder, margin=60,
                    hough_rho=1, hough_theta=PI_180,
                    hough_threshold_full=20, hough_threshold_cropped=10,
                    hough_minLineLength_full=15, hough_minLineLength_cropped=1,
-                   hough_maxLineGap_full=3, hough_maxLineGap_cropped=20):
+                   hough_maxLineGap_full=3, hough_maxLineGap_cropped=20,
+                   detect_threadhold=0):
     """Processes images in a folder by calling process_image for each."""
 
     ok_folder = os.path.join(output_folder_base, "OK")
@@ -244,7 +246,8 @@ def process_images(input_folder, output_folder_base, draw_folder, margin=60,
             hough_minLineLength_full,
             hough_minLineLength_cropped,
             hough_maxLineGap_full,
-            hough_maxLineGap_cropped
+            hough_maxLineGap_cropped,
+            detect_threadhold
         )
 
 
@@ -269,6 +272,7 @@ def main():
     HOUGH_MIN_LINE_LENGTH_CROPPED = 3
     HOUGH_MAX_LINE_GAP_FULL = 3
     HOUGH_MAX_LINE_GAP_CROPPED = 20
+    DETECT_THREADHOLD = 2
 
     process_images(
         input_folder=INPUT_FOLDER,
@@ -286,7 +290,8 @@ def main():
         hough_minLineLength_full=HOUGH_MIN_LINE_LENGTH_FULL,
         hough_minLineLength_cropped=HOUGH_MIN_LINE_LENGTH_CROPPED,
         hough_maxLineGap_full=HOUGH_MAX_LINE_GAP_FULL,
-        hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED
+        hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED,
+        detect_threadhold=DETECT_THREADHOLD
     )
 
 
