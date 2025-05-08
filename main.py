@@ -6,10 +6,9 @@ import glob
 from Core.image_process import load_templates, process_image as crop_and_template_match
 from Core.overhang_detection import process_image as detect_overhang
 import multiprocessing as mp
-from pathlib import Path
 
 # Define input and output paths
-INPUT_TYPE = r"OK"
+INPUT_TYPE = r"NG"
 INPUT_FOLDER = r"E:/02.pdx/pdx25-overhang/data/" + INPUT_TYPE
 TEMPLATE_PATH = r'E:/02.pdx/pdx25-overhang/data/template'
 CROPPED_OUTPUT_FOLDER = r'E:/02.pdx/pdx25-overhang/out/cropped_output'
@@ -33,14 +32,17 @@ HOUGH_MAX_LINE_GAP_FULL = 20
 CANNY_THRESHOLD1_CROPPED = 30
 CANNY_THRESHOLD2_CROPPED = 30
 HOUGH_THRESHOLD_CROPPED = 5
-HOUGH_MIN_LINE_LENGTH_CROPPED = 1
+HOUGH_MIN_LINE_LENGTH_CROPPED = 5
 HOUGH_MAX_LINE_GAP_CROPPED = 20
 
 HOUGH_RHO = 1
 HOUGH_THETA = np.pi / 180
 
+DETECT_THREADHOLD = 0
 
-def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OUTPUT_FOLDER, DRAW_FOLDER, MARGIN, CANNY_THRESHOLD1_FULL, CANNY_THRESHOLD2_FULL, HOUGH_THRESHOLD_FULL, HOUGH_MIN_LINE_LENGTH_FULL, HOUGH_MAX_LINE_GAP_FULL, CANNY_THRESHOLD1_CROPPED, CANNY_THRESHOLD2_CROPPED, HOUGH_THRESHOLD_CROPPED, HOUGH_MIN_LINE_LENGTH_CROPPED, HOUGH_MAX_LINE_GAP_CROPPED, HOUGH_RHO, HOUGH_THETA, INPUT_TYPE):
+
+def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OUTPUT_FOLDER, DRAW_FOLDER, MARGIN, CANNY_THRESHOLD1_FULL,
+                         CANNY_THRESHOLD2_FULL, HOUGH_THRESHOLD_FULL,   HOUGH_MIN_LINE_LENGTH_FULL, HOUGH_MAX_LINE_GAP_FULL, CANNY_THRESHOLD1_CROPPED, CANNY_THRESHOLD2_CROPPED, HOUGH_THRESHOLD_CROPPED, HOUGH_MIN_LINE_LENGTH_CROPPED, HOUGH_MAX_LINE_GAP_CROPPED, HOUGH_RHO, HOUGH_THETA, INPUT_TYPE, DETECT_THREADHOLD):
     """
         Processes overhang detection for a single image.
     """
@@ -84,7 +86,8 @@ def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OU
                 canny_threshold2_cropped=CANNY_THRESHOLD2_CROPPED,
                 hough_minLineLength_cropped=HOUGH_MIN_LINE_LENGTH_CROPPED,
                 hough_maxLineGap_full=HOUGH_MAX_LINE_GAP_FULL,
-                hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED
+                hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED,
+                detect_threadhold=DETECT_THREADHOLD
             )
             if result_left == "NG":
                 final_result = "NG"
@@ -115,7 +118,8 @@ def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OU
                 canny_threshold2_cropped=CANNY_THRESHOLD2_CROPPED,
                 hough_minLineLength_cropped=HOUGH_MIN_LINE_LENGTH_CROPPED,
                 hough_maxLineGap_full=HOUGH_MAX_LINE_GAP_FULL,
-                hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED
+                hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED,
+                detect_threadhold=DETECT_THREADHOLD
             )
 
             if result_right == "NG":
@@ -188,7 +192,7 @@ def main():
         HOUGH_THRESHOLD_FULL, HOUGH_MIN_LINE_LENGTH_FULL, HOUGH_MAX_LINE_GAP_FULL,
         CANNY_THRESHOLD1_CROPPED, CANNY_THRESHOLD2_CROPPED,
         HOUGH_THRESHOLD_CROPPED, HOUGH_MIN_LINE_LENGTH_CROPPED, HOUGH_MAX_LINE_GAP_CROPPED,
-        HOUGH_RHO, HOUGH_THETA, INPUT_TYPE
+        HOUGH_RHO, HOUGH_THETA, INPUT_TYPE, DETECT_THREADHOLD
     ) for image_path in image_files]
 
     results = []
