@@ -6,6 +6,7 @@ import glob
 from Core.image_process import load_templates, process_image as crop_and_template_match
 from Core.overhang_detection import process_image as detect_overhang
 import multiprocessing as mp
+import shutil
 
 # Define input and output paths
 INPUT_TYPE = r"NG"
@@ -212,6 +213,10 @@ def main():
         csvwriter.writerows(results)
 
     print(f"Results saved to {CSV_OUTPUT_PATH}")
+
+    if os.path.exists(CROPPED_OUTPUT_FOLDER):
+        shutil.rmtree(CROPPED_OUTPUT_FOLDER)
+
 
 
 if __name__ == "__main__":
