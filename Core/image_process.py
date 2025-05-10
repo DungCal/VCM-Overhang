@@ -9,9 +9,9 @@ MATCH_METHOD = cv2.TM_SQDIFF_NORMED
 MIN_THRESHOLD_FACTOR = 0.1
 IMAGE_SPLIT_RATIO = 0.5
 DEBUG = False
-CROP_WIDTH = 210  # Desired output crop width
-CROP_HEIGHT = 60   # Desired output crop height
-ALLOWED_EXTENSIONS = ('.png', '.jpg', '.jpeg')  # Tuple for faster lookup
+CROP_WIDTH = 210
+CROP_HEIGHT = 60
+ALLOWED_EXTENSIONS = ('.png', '.jpg', '.jpeg')
 
 
 def load_templates(template_folder_path):
