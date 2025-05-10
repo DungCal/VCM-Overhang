@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import os
 import glob
+import shutil
 
 # Constants
 PI_180 = np.pi / 180
@@ -253,10 +254,11 @@ def process_images(input_folder, output_folder_base, draw_folder, margin=60,
 
 def main():
     # Configuration Constants
-    INPUT_FOLDER = r"E:/02.pdx/pdx25-overhang/data/cropped\NG"
+    INPUT_FOLDER = r"E:/02.pdx/pdx25-overhang/data/cropped/NG"
     OUTPUT_BASE = r"E:/02.pdx/pdx25-overhang/data/"
     OUTPUT_FOLDER = OUTPUT_BASE + r"detect"
     DRAW_FOLDER = OUTPUT_BASE + r"draw_images"
+    TEMP_FOLDER = r"E:/02.pdx/pdx25-overhang/out/cropped_output"
 
     # Constants
     MARGIN = 50
@@ -293,6 +295,9 @@ def main():
         hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED,
         detect_threadhold=DETECT_THREADHOLD
     )
+
+    if os.path.exists(TEMP_FOLDER):
+        shutil.rmtree(TEMP_FOLDER)
 
 
 if __name__ == "__main__":
