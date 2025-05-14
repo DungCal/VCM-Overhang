@@ -9,7 +9,7 @@ import multiprocessing as mp
 import shutil
 
 # Define input and output paths
-INPUT_TYPE = r"NG"
+INPUT_TYPE = r"Validate"
 INPUT_FOLDER = r"E:/02.pdx/pdx25-overhang/data/" + INPUT_TYPE
 TEMPLATE_PATH = r'E:/02.pdx/pdx25-overhang/data/template'
 CROPPED_OUTPUT_FOLDER = r'E:/02.pdx/pdx25-overhang/out/cropped_output'

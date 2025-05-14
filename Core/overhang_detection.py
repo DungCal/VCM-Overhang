@@ -100,7 +100,7 @@ def detect_HTCC_line(image, margin, canny_threshold1, canny_threshold2, hough_rh
             angle = np.arctan2(y2 - y1, x2 - x1) * 180 / np.pi
 
             if -angle_threshold <= angle <= angle_threshold:
-                if x1 <= margin or x1 >= width - margin:
+                if x1 <= margin or x2 >= width - margin:
                     if y1 < min_y:
                         min_y = y1
                         max_line = [x1, y1, x2, y2]
