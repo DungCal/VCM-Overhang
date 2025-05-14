@@ -28,18 +28,18 @@ CANNY_THRESHOLD1_FULL = 100
 CANNY_THRESHOLD2_FULL = 100
 HOUGH_THRESHOLD_FULL = 20
 HOUGH_MIN_LINE_LENGTH_FULL = 10
-HOUGH_MAX_LINE_GAP_FULL = 20
+HOUGH_MAX_LINE_GAP_FULL = 10
 
 CANNY_THRESHOLD1_CROPPED = 30
 CANNY_THRESHOLD2_CROPPED = 30
-HOUGH_THRESHOLD_CROPPED = 5
-HOUGH_MIN_LINE_LENGTH_CROPPED = 5
+HOUGH_THRESHOLD_CROPPED = 10
+HOUGH_MIN_LINE_LENGTH_CROPPED = 3
 HOUGH_MAX_LINE_GAP_CROPPED = 20
 
 HOUGH_RHO = 1
 HOUGH_THETA = np.pi / 180
 
-DETECT_THREADHOLD = 0
+DETECT_THREADHOLD = 1
 
 
 def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OUTPUT_FOLDER, DRAW_FOLDER, MARGIN, CANNY_THRESHOLD1_FULL,
@@ -49,7 +49,6 @@ def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OU
     """
     image_name = os.path.basename(image_path)
     filename_base, file_extension = os.path.splitext(image_name)
-    image_count = 0
 
     try:
         # Crop the image based on template matching
@@ -65,7 +64,7 @@ def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OU
 
     except Exception as e:
         print(f"Error during cropping {image_name}: {e}")
-        return [image_count, image_name, INPUT_TYPE, "ERROR_CROPPING"]
+        return [image_name, INPUT_TYPE, "ERROR_CROPPING"]
 
     final_result = "OK"
     # Detect overhang on the left crop
@@ -145,15 +144,15 @@ def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OU
             cv2.imwrite(output_path_final, image)
         else:
             print(f"Error: Could not read image {image_path} for saving.")
-            return [image_count, image_name, INPUT_TYPE, "ERROR_SAVING_IMAGE_LOAD"]
+            return [image_name, INPUT_TYPE, "ERROR_SAVING_IMAGE_LOAD"]
     except Exception as e:
         print(
             f"Error saving image {image_name} to {output_folder} folder: {e}")
-        return [image_count, image_name, INPUT_TYPE, "ERROR_SAVING"]
+        return [image_name, INPUT_TYPE, "ERROR_SAVING"]
 
     print(f"{image_name} - Final Result: {final_result}")
 
-    return [image_count, image_name, INPUT_TYPE, final_result]
+    return [image_name, INPUT_TYPE, final_result]
 
 
 def process_image_wrapper(args):
@@ -197,8 +196,6 @@ def main():
     ) for image_path in image_files]
 
     results = []
-    image_count = 0
-
     with mp.Pool(mp.cpu_count()) as pool:
         results = pool.map(process_image_wrapper, image_args)
 
@@ -209,14 +206,13 @@ def main():
     with open(CSV_OUTPUT_PATH, mode, newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         if not file_exists:
-            csvwriter.writerow(["No", "Image Name", "Origin", "Result"])
+            csvwriter.writerow(["Image Name", "Origin", "Result"])
         csvwriter.writerows(results)
 
     print(f"Results saved to {CSV_OUTPUT_PATH}")
 
     if os.path.exists(CROPPED_OUTPUT_FOLDER):
         shutil.rmtree(CROPPED_OUTPUT_FOLDER)
-
 
 
 if __name__ == "__main__":

@@ -2,12 +2,12 @@ import cv2
 import numpy as np
 import os
 import glob
-
+from PIL import Image, ImageEnhance
 
 # Constants
 PI_180 = np.pi / 180
 SAVE_IMAGE_CROP = False
-SAVE_IMAGE_LINES = False
+SAVE_IMAGE_LINES = True
 
 # --- Line Detection Functions ---
 
@@ -17,6 +17,14 @@ def detect_lines(image, margin, canny_threshold1, canny_threshold2, hough_rho,
                  hough_max_line_gap, contrast_enhance=False, crop=False):
     try:
         working_image = image.copy()
+        image_rgb = cv2.cvtColor(working_image, cv2.COLOR_BGR2RGB)
+        pil_image = Image.fromarray(image_rgb)
+        # Enhance contrast
+        enhancer = ImageEnhance.Contrast(pil_image)
+        pil_image = enhancer.enhance(1.2)
+        # Convert back to OpenCV format (BGR)
+        working_image = cv2.cvtColor(
+            np.array(pil_image), cv2.COLOR_RGB2BGR)
 
         if contrast_enhance:
             working_image = increase_contrast(
@@ -24,7 +32,8 @@ def detect_lines(image, margin, canny_threshold1, canny_threshold2, hough_rho,
 
         if crop:
             height, width, _ = working_image.shape
-            working_image = working_image[:, margin:width - margin]
+
+            working_image = working_image[:, (margin+10): width - (margin+10)]
 
         gray = cv2.cvtColor(working_image, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -70,19 +79,32 @@ def detect_HTCC_line(image, margin, canny_threshold1, canny_threshold2, hough_rh
     max_line = None
     max_y = -1
 
+    # if lines is not None:
+    #     height, width = image.shape[:2]
+    #     for x1, y1, x2, y2 in lines:
+    #         length = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    #         angle = np.arctan2(y2 - y1, x2 - x1) * 180 / np.pi
+
+    #         if not (-angle_threshold <= angle <= angle_threshold and (x1 <= margin or x2 >= width - margin)):
+    #             continue
+
+    #         if length > max_len:
+    #             max_len = length
+    #             max_line = [x1, y1, x2, y2]
+    #             max_y = max(y1, y2)
+
     if lines is not None:
         height, width = image.shape[:2]
+        min_y = height 
         for x1, y1, x2, y2 in lines:
-            length = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
             angle = np.arctan2(y2 - y1, x2 - x1) * 180 / np.pi
 
-            if not (-angle_threshold <= angle <= angle_threshold and (x1 <= margin or x2 >= width - margin)):
-                continue
-
-            if length > max_len:
-                max_len = length
-                max_line = [x1, y1, x2, y2]
-                max_y = max(y1, y2)
+            if -angle_threshold <= angle <= angle_threshold:
+                if x1 <= margin or x1 >= width - margin:
+                    if y1 < min_y:
+                        min_y = y1
+                        max_line = [x1, y1, x2, y2]
+                        max_y = max(y1, y2)  
 
     return edges, max_y, max_line
 
@@ -151,7 +173,7 @@ def process_image(image_file, output_folder_base, draw_folder, margin,
         # Detect HTCC line
         edges_original, max_y_original, max_line_original = detect_HTCC_line(
             image_copy, margin, canny_threshold1_full, canny_threshold2_full, hough_rho, hough_theta,
-            hough_threshold_full, hough_minLineLength_full, hough_maxLineGap_full, angle_threshold=3
+            hough_threshold_full, hough_minLineLength_full, hough_maxLineGap_full, angle_threshold=5
         )
 
         # Detect VCM line
@@ -259,7 +281,6 @@ def main():
     OUTPUT_FOLDER = OUTPUT_BASE + r"detect"
     DRAW_FOLDER = OUTPUT_BASE + r"draw_images"
 
-
     # Constants
     MARGIN = 50
     CANNY_THRESHOLD1_FULL = 50
@@ -295,6 +316,7 @@ def main():
         hough_maxLineGap_cropped=HOUGH_MAX_LINE_GAP_CROPPED,
         detect_threadhold=DETECT_THREADHOLD
     )
+
 
 if __name__ == "__main__":
     main()
