@@ -9,13 +9,16 @@ import multiprocessing as mp
 import shutil
 
 # Define input and output paths
-INPUT_TYPE = r"Validate"
-INPUT_FOLDER = r"E:/02.pdx/pdx25-overhang/data/" + INPUT_TYPE
-TEMPLATE_PATH = r'E:/02.pdx/pdx25-overhang/data/template'
-CROPPED_OUTPUT_FOLDER = r'E:/02.pdx/pdx25-overhang/out/cropped_output'
-DETECT_OUTPUT_FOLDER = r'E:/02.pdx/pdx25-overhang/out/detect_output'
-CSV_OUTPUT_PATH = r'E:/02.pdx/pdx25-overhang/out/results.csv'
-DRAW_FOLDER = r"E:/02.pdx/pdx25-overhang/out/draw_images"
+INPUT_PATH = r'E:/02.pdx/pdx25-overhang/data/'
+INPUT_TYPE = r"20250620/KCMFPBC50A"
+INPUT_FOLDER = INPUT_PATH + INPUT_TYPE
+TEMPLATE_PATH = INPUT_PATH + r'template'
+
+RESULT_PATH = r'E:/02.pdx/pdx25-overhang/KCMFPBC50A/'
+CROPPED_OUTPUT_FOLDER = RESULT_PATH + r'cropped_output'
+DETECT_OUTPUT_FOLDER = RESULT_PATH + r'detect_output'
+CSV_OUTPUT_PATH = RESULT_PATH + r'results.csv'
+DRAW_FOLDER = RESULT_PATH + r'draw_images'
 
 # Define parameters for template matching
 MATCH_METHOD = cv2.TM_SQDIFF_NORMED
@@ -137,7 +140,6 @@ def process_single_image(image_path, templates, CROPPED_OUTPUT_FOLDER, DETECT_OU
     output_path_final = os.path.join(output_folder, output_filename)
 
     try:
-
         os.makedirs(output_folder, exist_ok=True)
         image = cv2.imread(image_path)
         if image is not None:

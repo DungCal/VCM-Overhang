@@ -11,6 +11,7 @@ IMAGE_SPLIT_RATIO = 0.5
 DEBUG = False
 CROP_WIDTH = 210
 CROP_HEIGHT = 50
+ALPHA = 30
 ALLOWED_EXTENSIONS = ('.png', '.jpg', '.jpeg')
 
 
@@ -45,7 +46,7 @@ def crop_and_save(image, center_x, center_y, crop_width, crop_height, output_pat
     try:
         # Calculate top-left corner of the crop
         x_start = int(center_x - crop_width / 2)
-        y_start = int(center_y - crop_height / 2)
+        y_start = int(center_y - crop_height / 2) + ALPHA
 
         # Clip the coordinates to ensure they're within the image boundaries.  This is much more concise.
         x_start = np.clip(x_start, 0, image.shape[1] - crop_width)
