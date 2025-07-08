@@ -5,7 +5,7 @@ import multiprocessing as mp
 
 # --- File and Path Configuration ---
 BASE_PATH = Path(r"E:/02.pdx/pdx25-overhang")
-INPUT_SUBFOLDER = r"NG/Symptom1"
+INPUT_SUBFOLDER = r"NG/Symptom 2"
 INPUT_FOLDER = BASE_PATH / "data" / INPUT_SUBFOLDER
 TEMPLATE_FOLDER = BASE_PATH / "data/template"
 OUTPUT_BASE = BASE_PATH / "output" / INPUT_SUBFOLDER
