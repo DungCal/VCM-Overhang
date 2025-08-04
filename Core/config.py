@@ -5,26 +5,26 @@ import multiprocessing as mp
 
 # --- File and Path Configuration ---
 BASE_PATH = Path(r"E:/02.pdx/pdx25-overhang")
-INPUT_SUBFOLDER = r"NG/Symptom 2"
+INPUT_SUBFOLDER = r"KCMFPBC30A"
 INPUT_FOLDER = BASE_PATH / "data" / INPUT_SUBFOLDER
 TEMPLATE_FOLDER = BASE_PATH / "data/template"
 OUTPUT_BASE = BASE_PATH / "output" / INPUT_SUBFOLDER
 
 # --- General Settings ---
-DEBUG = False
+DEBUG = True
 ALLOWED_EXTENSIONS = ('.png', '.jpg', '.jpeg')
 NUM_PROCESSES = max(1, mp.cpu_count() - 1)
 
 
 # --- Output Settings ---
-SAVE_IMAGE_LINES = False
-SAVE_EDGES_IMAGE = False
+SAVE_IMAGE_LINES = True
+SAVE_EDGES_IMAGE = True
 
 # --- Cropping and Template Matching Parameters ---
 MATCH_METHOD = cv2.TM_SQDIFF_NORMED
 SEARCH_WIDTH_RATIO = 0.5
 EARLY_EXIT_THRESHOLD = 0.05
-CROP_WIDTH = 280
+CROP_WIDTH = 500
 TOP_OFFSET = 100
 BOTTOM_OFFSET = -10
 
