@@ -24,7 +24,7 @@ SAVE_EDGES_IMAGE = True
 MATCH_METHOD = cv2.TM_SQDIFF_NORMED
 SEARCH_WIDTH_RATIO = 0.5
 EARLY_EXIT_THRESHOLD = 0.05
-CROP_WIDTH = 500
+CROP_WIDTH = 350
 TOP_OFFSET = 100
 BOTTOM_OFFSET = -10
 
@@ -42,8 +42,8 @@ DETECTION_PARAMS = {
         'hough_max_line_gap': 3,
     },
     'vcm_hough': {
-        'canny_threshold1': 30,
-        'canny_threshold2': 50,
+        'canny_threshold1': 20,
+        'canny_threshold2': 30,
         'hough_rho': 1,
         'hough_theta': np.pi / 180,
         'hough_threshold': 10,
