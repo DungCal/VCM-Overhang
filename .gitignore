@@ -1,2 +1,8 @@
 **/*.png
 **/*.jpg
+
+/D_output   
+/PDX_25 (1)
+/PDX_D
+/PDX_T
+/T_output
