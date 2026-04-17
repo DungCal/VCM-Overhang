@@ -4,10 +4,10 @@ from pathlib import Path
 import multiprocessing as mp
 
 # --- File and Path Configuration ---
-BASE_PATH = Path(r"E:/02.pdx/pdx25-overhang")
-INPUT_SUBFOLDER = r"KCMFPBC30A"
-INPUT_FOLDER = BASE_PATH / "data" / INPUT_SUBFOLDER
-TEMPLATE_FOLDER = BASE_PATH / "data/template"
+BASE_PATH = Path(r"D:\AI\CM\pdx25-overhang")
+INPUT_SUBFOLDER = r"PDX_D"
+INPUT_FOLDER = BASE_PATH / INPUT_SUBFOLDER
+TEMPLATE_FOLDER = BASE_PATH / "data/new_template"
 OUTPUT_BASE = BASE_PATH / "output" / INPUT_SUBFOLDER
 
 # --- General Settings ---
@@ -22,11 +22,11 @@ SAVE_EDGES_IMAGE = True
 
 # --- Cropping and Template Matching Parameters ---
 MATCH_METHOD = cv2.TM_SQDIFF_NORMED
-SEARCH_WIDTH_RATIO = 0.5
+SEARCH_WIDTH_RATIO = 0.3
 EARLY_EXIT_THRESHOLD = 0.05
-CROP_WIDTH = 350
-TOP_OFFSET = 100
-BOTTOM_OFFSET = -10
+CROP_WIDTH = 95
+TOP_OFFSET = 200
+BOTTOM_OFFSET = -200
 
 # --- Line Detection Parameters ---
 DETECTION_PARAMS = {

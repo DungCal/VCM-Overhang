@@ -55,6 +55,7 @@ def detect_best_match(search_area_gray, templates):
         if t_h > search_area_gray.shape[0] or t_w > search_area_gray.shape[1]:
             continue
         try:
+            print('try')
             res = cv2.matchTemplate(
                 search_area_gray, template, config.MATCH_METHOD)
             min_val, _, min_loc, _ = cv2.minMaxLoc(res)
@@ -121,14 +122,17 @@ def process_image_pipeline(image_path, output_folders):
             img_gray = worker_clahe.apply(img_gray)
 
         h, w = img_gray.shape
-        search_start_y = int(h * 4 / 5)
+        search_start_y = int(h * 0.5 / 5)
         search_width = int(w * config.SEARCH_WIDTH_RATIO)
-        search_offset_x = (w - search_width) // 2
+        search_offset_x = (w - search_width)
         search_area_gray = img_gray[search_start_y:,
                                     search_offset_x:search_offset_x + search_width]
 
         match_loc, t_w, t_h = detect_best_match(
             search_area_gray, worker_templates)
+        
+        print(match_loc)
+
         if not (match_loc and t_w > 0):
             print(f"No template match for {image_path.name}. Skipping.")
             return "FAILED_CROP"
@@ -139,10 +143,20 @@ def process_image_pipeline(image_path, output_folders):
 
         y_start = np.clip(y + config.TOP_OFFSET, 0, h)
         y_end = np.clip(y + t_h + config.BOTTOM_OFFSET, 0, h)
-        x_start = np.clip(int(center_x - config.CROP_WIDTH / 2), 0, w)
-        x_end = np.clip(x_start + config.CROP_WIDTH, 0, w)
+        x_start = np.clip(int(center_x + config.CROP_WIDTH / 2), 0, x+t_w)
+        x_end = np.clip(x_start + config.CROP_WIDTH, 0, x + t_w)
+
+
 
         cropped_image = img_bgr[y_start:y_end, x_start:x_end]
+        ch, cw = cropped_image.shape[:2]
+        # Rotate cropped image only if vertical
+        if cw < ch:
+            cropped_image = cv2.rotate(
+                cropped_image,
+                cv2.ROTATE_90_CLOCKWISE
+            )
+
         filename, ext = image_path.stem, image_path.suffix
 
         if config.DEBUG:
